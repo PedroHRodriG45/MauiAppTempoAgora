@@ -30,7 +30,10 @@ namespace MauiAppTempoAgora
                                          $"Nascer do Sol: {t.sunrise} \n" +
                                          $"Por do Sol: {t.sunset} \n" +
                                          $"Temp Máx: {t.temp_max} \n" +
-                                         $"Temp Min: {t.temp_min} \n";
+                                         $"Temp Min: {t.temp_min} \n" +
+                                         $"description: {t.description} \n" +
+                                         $"speed: {t.speed} \n" +
+                                         $"visibility: {t.visibility} \n";
 
                         lbl_res.Text = dados_previsao;
 
@@ -48,7 +51,18 @@ namespace MauiAppTempoAgora
             }
             catch (Exception ex) 
             {
-                await DisplayAlert("Ops", ex.Message, "OK");
+                if (ex.Message == "Sem internet")
+                {
+                    await DisplayAlert("Sem Conexão", "Você está offline. Verifique sua internet!", "OK");
+                }
+                else if (ex.Message == "Cidade nao encontrada")
+                {
+                    await DisplayAlert("Não Encontrado", "Cidade não encontrada. Verifique o nome digitado.", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Ops", ex.Message, "OK");
+                }
             }
 
         }

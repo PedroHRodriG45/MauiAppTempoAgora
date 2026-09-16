@@ -1,5 +1,6 @@
 ﻿using MauiAppTempoAgora.Models;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace MauiAppTempoAgora.Services
 {
@@ -7,6 +8,11 @@ namespace MauiAppTempoAgora.Services
     {
         public static async Task<Tempo?> GetPrevisao(string cidade)
         {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                throw new Exception("Sem internet");
+            }
+
             Tempo? t = null;
 
             string chave = "6135072afe7f6cec1537d5cb08a5a1a2";
@@ -18,6 +24,10 @@ namespace MauiAppTempoAgora.Services
             {
                 HttpResponseMessage resp = await client.GetAsync(url);
 
+                if (resp.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new Exception("Cidade não encontrada");
+                }
                 if (resp.IsSuccessStatusCode)
                 {
                     string json = await resp.Content.ReadAsStringAsync();
